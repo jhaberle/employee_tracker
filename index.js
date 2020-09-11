@@ -1,5 +1,6 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
+const table = require("table");
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -13,13 +14,15 @@ connection.connect(function(err){
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
     afterConnection();
+  
 })
 
 function afterConnection(){
-    connection.query('', (err, res) => {
+    connection.query('SELECT * FROM employee_trackerdb.employees;', (err, res) => {
         if (err) throw (err);
         console.log(res);
         connection.end();
 
     })
 }
+
