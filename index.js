@@ -35,11 +35,14 @@ function introToApp() {
     });
 }
 
-
-
 function addEmployee() {
   return inquirer
     .prompt([
+      {
+        type: "input",
+        message: "Create New Employee ID Number",
+        name: "id",
+      },
       {
         type: "input",
         message: "First Name",
@@ -83,8 +86,9 @@ function addEmployee() {
     ])
     .then(function (answers) {
       connection.query(
-        "INSERT INTO employees SET ?",
+        "INSERT INTO employee_trackerdb.employees SET ?",
         {
+          id: answers.id,
           first_name: answers.first_name,
           last_name: answers.last_name,
           title: answers.job,
@@ -95,24 +99,61 @@ function addEmployee() {
         function (err) {
           if (err) throw err;
           console.log("Employee Added to Database!");
-            
-      
         }
       );
       introToApp();
     });
 }
 
-function viewAllEmployees(){
-    connection.query("SELECT * FROM employee_trackerdb.employees", function(err, res) {
-      if (err) throw err;
-      var data = ["id", "First Name", "Last Name", "Title", "Department", "Salary", "Manager"];
+function viewAllEmployees() {
+  connection.query("SELECT * FROM employee_trackerdb.employees", function (
+    err,
+    res
+  ) {
+    if (err) throw err;
+    var data = [];
+    for (var i = 0; i < res.length; i++) {
+      empLog = [
+        res[i].id +
+          " | " +
+          res[i].first_name +
+          " | " +
+          res[i].last_name +
+          " | " +
+          res[i].title +
+          " | " +
+          res[i].department +
+          " | " +
+          res[i].salary +
+          " | " +
+          res[i].manager,
+      ];
+      data.push(empLog);
+    }
+    console.table(data);
+  });
+  introToApp();
+}
 
-      for (var i = 0; i < res.length; i++) {
-        empLog = [res[i].id + " | " + res[i].first_name + " | " + res[i].last_name + " | " + res[i].title + " | " + res[i].department + " | " + res[i].salary + " | " + res[i].manager]
-        data.push(empLog);
-      }
-      console.table(empLog);
+function RemoveEmployee() {
+  inquirer
+    .prompt({
+      type: "input",
+      message: "What is the ID of the employee to be removed?",
+      name: "del_id",
     })
-    introToApp();
+    .then(function (answers) {
+      connection.query(
+        "DELETE FROM employee_trackerdb.employees WHERE ?",
+        {
+          id: answers.del_id,
+        },
+        function (err, res) {
+          if (err) throw err;
+          console.log("Employee has been removed!");
+          viewAllEmployees();
+    
+        }
+      );
+    });
 }
