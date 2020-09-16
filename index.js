@@ -46,7 +46,7 @@ function addEmployee() {
       {
         type: "input",
         message: "First Name",
-        name: "fist_name",
+        name: "first_name",
       },
       {
         type: "input",
@@ -99,10 +99,11 @@ function addEmployee() {
         function (err) {
           if (err) throw err;
           console.log("Employee Added to Database!");
+          introToApp();
         }
       );
-      introToApp();
-    });
+    })
+
 }
 
 function viewAllEmployees() {
@@ -152,7 +153,6 @@ function RemoveEmployee() {
           if (err) throw err;
           console.log("Employee has been removed!");
           viewAllEmployees();
-    
         }
       );
     });
